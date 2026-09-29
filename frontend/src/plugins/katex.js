@@ -5,7 +5,7 @@ const getRenderer = () => rendererPromise || (rendererPromise = Promise.all([
   import('katex/dist/katex.min.css')
 ]).then(([renderer]) => renderer.default))
 
-const defaults = { throwOnError: false, delimiters: [
+const defaults = { throwOnError: false, macros: {'\\N': '\\mathbb{N}'}, ignoredTags: ['pre', 'code', 'textarea'], delimiters: [
   {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false},
   {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}
 ] }

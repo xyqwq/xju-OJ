@@ -16,7 +16,7 @@
     <div v-if="showChart" class="echarts">
       <ECharts :options="options" ref="chart" auto-resize></ECharts>
     </div>
-    <Table ref="tableRank" :columns="columns" :data="dataRank" disabled-hover></Table>
+    <Table ref="tableRank" class="auto-resize" :columns="columns" :data="dataRank" disabled-hover></Table>
     <Pagination :total="total"
                 :page-size="limit" @update:page-size="limit = $event"
                 :current="page" @update:current="page = $event"
@@ -262,7 +262,8 @@
           this.columns.push({
             align: 'center',
             key: problem.id,
-            width: problems.length > 15 ? 80 : null,
+            // Let the table distribute problem columns across its parent.
+            width: null,
             renderHeader: (h, params) => {
               return h('a', {
                 'class': {

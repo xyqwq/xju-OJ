@@ -456,8 +456,11 @@ def _apply_admin_claims(user, claims):
 
     groups = claims.get("groups", [])
     is_studio_admin = isinstance(groups, list) and _ADMIN_GROUP in groups
-    next_admin_type = AdminType.SUPER_ADMIN if is_studio_admin else AdminType.REGULAR_USER
-    next_problem_permission = ProblemPermission.ALL if is_studio_admin else ProblemPermission.NONE
+    # A verified Studio admin claim grants super-admin access.  Do not
+    # silently demote an existing administrator when an IdP response omits
+    # the groups claim transiently; revocation must be explicit in the OJ.
+    next_admin_type = AdminType.SUPER_ADMIN if is_studio_admin else user.admin_type
+    next_problem_permission = ProblemPermission.ALL if is_studio_admin else user.problem_permission
     changed = []
     if user.admin_type != next_admin_type:
         user.admin_type = next_admin_type
