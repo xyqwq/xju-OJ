@@ -142,6 +142,11 @@
     methods: {
       async saveContest () {
         if (this.saving) return
+        const contestTitle = typeof this.contest.title === 'string' ? this.contest.title.trim() : ''
+        if (!contestTitle) {
+          this.$error('请填写比赛名称')
+          return
+        }
         const incompatibleProblem = this.problemPlan.find(item => (
           (item.kind === 'REMOTE' && this.contest.rule_type !== 'ACM') ||
           (item.kind === 'PUBLIC' && item.ruleType && item.ruleType !== this.contest.rule_type)
@@ -153,6 +158,7 @@
         this.saving = true
         let funcName = this.$route.name === 'edit-contest' ? 'editContest' : 'createContest'
         let data = Object.assign({}, this.contest)
+        data.title = contestTitle
         data.allowed_ip_ranges = Array.isArray(data.allowed_ip_ranges) ? data.allowed_ip_ranges : []
         try {
           const res = await api[funcName](data)
@@ -168,7 +174,8 @@
           }
           this.$router.push({name: 'contest-list', query: {refresh: 'true'}})
         } catch (error) {
-          this.$error(error.message || '比赛保存失败')
+          // The API client already displays validation errors from the server.
+          if (!error?.data?.error) this.$error(error.message || '比赛保存失败')
         } finally {
           this.saving = false
         }

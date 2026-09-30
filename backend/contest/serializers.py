@@ -6,7 +6,7 @@ from .models import ACMContestRank, OIContestRank
 
 class CreateConetestSeriaizer(serializers.Serializer):
     title = serializers.CharField(max_length=128)
-    description = serializers.CharField()
+    description = serializers.CharField(allow_blank=True)
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     rule_type = serializers.ChoiceField(choices=[ContestRuleType.ACM, ContestRuleType.OI])
@@ -19,7 +19,7 @@ class CreateConetestSeriaizer(serializers.Serializer):
 class EditConetestSeriaizer(serializers.Serializer):
     id = serializers.IntegerField()
     title = serializers.CharField(max_length=128)
-    description = serializers.CharField()
+    description = serializers.CharField(allow_blank=True)
     start_time = serializers.DateTimeField()
     end_time = serializers.DateTimeField()
     password = serializers.CharField(allow_blank=True, allow_null=True, max_length=32)

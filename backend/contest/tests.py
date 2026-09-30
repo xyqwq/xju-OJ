@@ -28,6 +28,12 @@ class ContestAdminAPITest(APITestCase):
         self.assertSuccess(response)
         return response
 
+    def test_create_contest_with_blank_description(self):
+        self.data["description"] = ""
+        response = self.client.post(self.url, data=self.data)
+        self.assertSuccess(response)
+        self.assertEqual(response.data["data"]["description"], "")
+
     def test_create_contest_with_invalid_cidr(self):
         self.data["allowed_ip_ranges"] = ["127.0.0"]
         resp = self.client.post(self.url, data=self.data)
@@ -48,6 +54,13 @@ class ContestAdminAPITest(APITestCase):
             if isinstance(data[k], datetime):
                 continue
             self.assertEqual(response_data[k], data[k])
+
+    def test_update_contest_with_blank_description(self):
+        contest_id = self.test_create_contest().data["data"]["id"]
+        self.data.update({"id": contest_id, "description": ""})
+        response = self.client.put(self.url, data=self.data)
+        self.assertSuccess(response)
+        self.assertEqual(response.data["data"]["description"], "")
 
     def test_get_contests(self):
         self.test_create_contest()
