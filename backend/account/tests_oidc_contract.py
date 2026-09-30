@@ -68,3 +68,14 @@ class OIDCContractTests(SimpleTestCase):
         oidc._apply_admin_claims(user, {"groups": ["studio-users"]})
         self.assertEqual(user.admin_type, oidc.AdminType.REGULAR_USER)
         self.assertEqual(user.problem_permission, oidc.ProblemPermission.NONE)
+
+    def test_missing_group_claim_keeps_existing_admin_role(self):
+        user = type("User", (), {
+            "admin_type": oidc.AdminType.SUPER_ADMIN,
+            "problem_permission": oidc.ProblemPermission.ALL,
+            "save": lambda self, update_fields: setattr(self, "saved", update_fields),
+        })()
+        oidc._apply_admin_claims(user, {})
+        self.assertEqual(user.admin_type, oidc.AdminType.SUPER_ADMIN)
+        self.assertEqual(user.problem_permission, oidc.ProblemPermission.ALL)
+        self.assertFalse(hasattr(user, "saved"))

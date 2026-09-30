@@ -262,8 +262,9 @@
           this.columns.push({
             align: 'center',
             key: problem.id,
-            // Let the table distribute problem columns across its parent.
-            width: null,
+            // Element Plus defaults flex columns to at least 80px. Allow
+            // each problem column to share the actual remaining width.
+            minWidth: 1,
             renderHeader: (h, params) => {
               return h('a', {
                 'class': {
