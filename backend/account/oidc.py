@@ -452,8 +452,10 @@ def _claims_for_storage(claims, email):
 
 
 def _apply_admin_claims(user, claims):
-    """Make OJ admin authority follow the verified Studio admin group claim."""
+    """Follow Studio groups unless an OJ administrator set the role locally."""
 
+    if getattr(user, "admin_role_manual_override", False):
+        return
     groups = claims.get("groups")
     # Missing or malformed group claims do not establish a revocation. An
     # explicit group list without the admin group does revoke access.
